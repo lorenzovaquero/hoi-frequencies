@@ -34,10 +34,17 @@ def querify(text, join_with_star=False):
     verb_query.extend(verb_preposition)
     verb_query = '+'.join(verb_query)
 
-    # For object, we augment all words
-    obj = obj.split(' ')
-    obj = [o.strip() + '~' for o in obj]  # We augment the object.  # TODO: We need to do something more elaborate here (like ask GPT for plurals)
-    obj_query = '+'.join(obj)
+    # For object, we could augment all words. However, it is too many wildcards and the API does not return results.
+    # We, therefore, only augment the last word (i.e. dining table -> dining table~)
+    obj_root = obj.split(' ')[-1].strip()
+    obj_root = obj_root + '~'  # We augment the object.  # TODO: We need to do something more elaborate here (like ask GPT)
+
+    obj_preposition = obj.split(' ')[:-1]
+    obj_preposition = [p.strip() for p in obj_preposition]
+    
+    obj_query = obj_preposition
+    obj_query.append(obj_root)
+    obj_query = '+'.join(obj_query)
 
     if join_with_star:
         query = "{}+*+{}".format(verb_query, obj_query)  # We add * to account for articles, adjectives, etc.

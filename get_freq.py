@@ -9,7 +9,7 @@ def call_api(query_text):
     corpus = "eng"
     endpoint = "search"
 
-    extra_params = "flags=cr+cs"
+    extra_params = "flags=cr"
     
     api_url = "{}/{}/{}?query={}&{}".format(base_url, corpus, endpoint, query_text, extra_params)
     response = requests.get(api_url)
